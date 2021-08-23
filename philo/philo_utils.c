@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_start.c                                      :+:      :+:    :+:   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/08/23 18:44:25 by nagrivan         ###   ########.fr       */
+/*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
+/*   Updated: 2021/08/23 15:22:00 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int argc, char **argv)
+void ft_usleep(int time)
 {
-	t_info info;
-	t_philo philo;
-
-	if (argc != 5 || argc != 6)
-		return (1);
-	return (0);
+	while (time)
+	{
+		usleep(1000);
+		time--;
+	}
 }
