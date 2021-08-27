@@ -6,11 +6,16 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/08/25 02:50:23 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/08/27 20:04:08 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_messange(time_t time, int num_phil, char *text)
+{
+	printf("%ld%-10d      %s\n", time, num_phil, text);
+}
 
 void	*ft_calloc(size_t count, size_t size)
 {
