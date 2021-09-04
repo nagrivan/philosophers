@@ -3,3 +3,4 @@
 *test
 *.dSYM
 *.vscode
+*logs

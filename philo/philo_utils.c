@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/08/30 21:24:40 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/04 15:41:10 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_messange(time_t time, int num_phil, char *text)
 {
-	printf("%ld%-10d      %s\n", time, num_phil, text);
+	printf("| %ld | %d |   %s|\n", time, num_phil, text);
 }
 
 void	*ft_calloc(size_t count, size_t size)
@@ -61,5 +61,5 @@ time_t  get_time(void)
 {
     static struct timeval   time;
     gettimeofday(&time, NULL);
-    return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000);
+    return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000);;
 }

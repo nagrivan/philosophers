@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:11:55 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/08/31 00:32:53 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/04 14:09:20 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <pthread.h>
 # include <time.h>
 # include <stdlib.h>
+# include <string.h>
 
 typedef struct s_philo
 {
