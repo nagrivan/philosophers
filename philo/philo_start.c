@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/04 16:00:55 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/04 17:38:52 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,19 @@ void who_is_died(t_info *info)
     int i;
 
     who_is_eat = 0;
-    i = 1;
+    i = 0;
     while (1)
     {
+		if (i >= info->number_philo)
+			i = 0;
+		// printf("i = %d\n", i);
         info->current_time = get_time();
+		// printf("number of philos = %d\n", info->philo[i].num_phil);
+		// printf("philo # %d, time to start = %ld, time eat of philo = %ld\n", info->philo[i].num_phil, info->time_to_start, info->philo[i].start_eat);
         if (info->current_time - info->time_to_start - info->philo[i].start_eat > info->time_to_die)
 		{
 			pthread_mutex_lock(&info->print_mess);
-			print_messange(info->current_time - info->time_to_start, info->philo->num_phil, "is died.");
+			print_messange(info->current_time - info->time_to_start, info->philo[i].num_phil, "is died.");
 			pthread_mutex_unlock(&info->print_mess);
             return ;
 		}
@@ -34,7 +39,7 @@ void who_is_died(t_info *info)
         if (who_is_eat == info->number_philo)
 		{
 			pthread_mutex_lock(&info->print_mess);
-			printf("| %ld | - |   %s|\n", info->current_time - info->time_to_start, "all are eating");
+			printf("| %ld | - | %s |\n", info->current_time - info->time_to_start, "all are eating");
 			pthread_mutex_unlock(&info->print_mess);
             return ;
 		}
@@ -49,6 +54,7 @@ void *round_life(void *philo)
 	copy_ph = (t_philo *)philo;
 	if (copy_ph->num_phil % 2 == 0)
 		usleep(1000);
+	// printf("number of philos = %d\n", copy_ph->num_phil);
 	while (1)
 	{
 		pthread_mutex_lock(&copy_ph->data->forks[copy_ph->left_fork]);
@@ -62,9 +68,10 @@ void *round_life(void *philo)
 		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "take a right fork.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
 		copy_ph->num_eat++;
-		copy_ph->start_eat = get_time();
+		copy_ph->data->current_time = get_time();
+		copy_ph->start_eat = copy_ph->data->current_time - copy_ph->data->time_to_start;
 		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->start_eat - copy_ph->data->time_to_start, copy_ph->num_phil, "is eating.");
+		print_messange(copy_ph->start_eat, copy_ph->num_phil, "is eating.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
 		usleep(copy_ph->data->time_to_eat * 1000);
 		pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->left_fork]);
@@ -96,6 +103,7 @@ void start_play(t_info *info)
 void init_phill(t_info *info, int i) // инициализируем структуру каждого философа
 {
 	info->philo[i].num_phil = i + 1;
+	// printf("number of philos = %d\n", info->philo[i].num_phil);
 	info->philo[i].left_fork = info->philo[i].num_phil - 1;
 	if (info->philo[i].left_fork < 1)
 		info->philo[i].left_fork = info->number_philo;
@@ -124,6 +132,7 @@ int before_a_game(t_info *info) // подготовка к началу "гол�
 	i = 0;
 	while (i < info->number_philo)
 	{
+		// printf("i = %d\n", i);
 		init_phill(info, i);
 		i++;
 	}
