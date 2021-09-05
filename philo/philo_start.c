@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 19:02:54 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/05 20:08:35 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,17 +84,19 @@ void *round_life(void *philo)
 	}
 }
 
-void start_play(t_info *info)
+int start_play(t_info *info)
 {
 	int i;
 
 	i = 0;
 	while (i < info->number_philo)
 	{
-		pthread_create(&info->philo[i].tread, NULL, &round_life, (void *)(&info->philo[i]));
+		if ((pthread_create(&info->philo[i].tread, NULL, &round_life, (void *)(&info->philo[i]))) != 0)
+			return (1);
 		pthread_detach(info->philo[i].tread);
 		i++;
 	}
+	return (0);
 }
 
 void init_phill(t_info *info, int i) // инициализируем структуру каждого философа
@@ -164,11 +166,25 @@ int main(int argc, char **argv)
 	t_info info;
 	
 	if (argc != 5 && argc != 6)
+	{
+		print_errors(0);
 		return (1);
+	}
 	if ((init_struct(&info, argc, argv)) != 0)
+	{
+		print_errors(1);
 		return (1);
-	before_a_game(&info);
-	start_play(&info);
+	}
+	if ((before_a_game(&info)) != 0)
+	{
+		print_errors(2);
+		return (1);
+	}
+	if ((start_play(&info)) != 0)
+	{
+		print_errors(3);
+		return (1);
+	}
 	who_is_died(&info);
 	return (0);
 }

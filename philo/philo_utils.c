@@ -6,11 +6,24 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 19:12:24 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/05 20:15:46 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_errors(int error)
+{
+	if (error == 0)
+		printf("%s\n", "Invalid number arguments");
+	if (error == 1)
+		printf("%s\n", "Invalid arguments");
+	if (error == 2)
+		printf("%s\n", "Invalid malloc");
+	if (error == 3)
+		printf("%s\n", "Invalid tread");
+	printf("I refuse to work like this!\n");
+}
 
 void	print_messange(time_t time, int num_phil, char *text)
 {

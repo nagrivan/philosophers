@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:11:55 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 16:11:29 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/05 19:58:56 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 void ft_usleep(int time);
 time_t  get_time(void);
+void	print_errors(int error);
 void	print_messange(time_t time, int num_phil, char *text);
 
 #endif
