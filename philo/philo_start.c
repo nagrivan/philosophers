@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 18:05:32 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/05 19:02:54 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,30 @@ void *round_life(void *philo)
 		pthread_mutex_lock(&copy_ph->data->print_mess);
 		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "take a left fork.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
+		
 		pthread_mutex_lock(&copy_ph->data->forks[copy_ph->right_fork]);
 		copy_ph->data->current_time = get_time();
 		pthread_mutex_lock(&copy_ph->data->print_mess);
 		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "take a right fork.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
+		
 		copy_ph->data->current_time = get_time();
 		copy_ph->start_eat = copy_ph->data->current_time - copy_ph->data->time_to_start;
 		pthread_mutex_lock(&copy_ph->data->print_mess);
 		print_messange(copy_ph->start_eat, copy_ph->num_phil, "is eating.");
+		pthread_mutex_unlock(&copy_ph->data->print_mess);
 		copy_ph->num_eat++;
 		if (copy_ph->num_eat == copy_ph->data->number_of_philo_eat)
 			who_is_eat++;
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		usleep(copy_ph->data->time_to_eat * 1000);
+		
+		ft_usleep(copy_ph->data->time_to_eat);
 		pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->left_fork]);
 		pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->right_fork]);
 		copy_ph->start_sleep = get_time();
 		pthread_mutex_lock(&copy_ph->data->print_mess);
 		print_messange(copy_ph->start_sleep - copy_ph->data->time_to_start, copy_ph->num_phil, "is sleeping.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		usleep(copy_ph->data->time_to_sleep * 1000);
+		ft_usleep(copy_ph->data->time_to_sleep);
 		pthread_mutex_lock(&copy_ph->data->print_mess);
 		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "if thinking.");
 		pthread_mutex_unlock(&copy_ph->data->print_mess);
@@ -109,7 +112,7 @@ void init_phill(t_info *info, int i) // инициализируем струк�
 	}
 	info->philo[i].num_eat = 0;
 	info->philo[i].data = info;
-	info->philo[i].start_eat = get_time();
+	info->philo[i].start_eat = 0;
 }
 
 int before_a_game(t_info *info) // подготовка к началу "голодных игр" плодим необходимое количество структур под каждого философа и узнаем время начала.
