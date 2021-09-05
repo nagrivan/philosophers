@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:11:55 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/04 14:09:20 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/05 16:11:29 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_philo
 	time_t start_sleep; // время начала сна
 	pthread_t tread;
 	struct s_info *data;
+	// int i_all;
 } t_philo;
 
 typedef struct s_info
