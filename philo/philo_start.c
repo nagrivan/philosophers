@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 20:08:35 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/06 19:05:45 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void *round_life(void *philo)
 	
 	copy_ph = (t_philo *)philo;
 	if (copy_ph->num_phil % 2 == 0)
-		usleep(1000);
+		ft_usleep(1000);
 	while (1)
 	{
 		pthread_mutex_lock(&copy_ph->data->forks[copy_ph->left_fork]);

@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 20:15:46 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/06 19:06:29 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void ft_usleep(int time)
 {
 	while (time)
 	{
-		usleep(100);
+		usleep(250);
 		time--;
 	}
 }
