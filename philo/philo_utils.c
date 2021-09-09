@@ -6,11 +6,26 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/06 19:06:29 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/09 04:19:48 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_free(t_info *info)
+{
+	int i;
+
+	i = 0;
+	while (i <= info->number_philo)
+	{
+		pthread_mutex_destroy(&info->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&info->forks[i]);
+	pthread_mutex_destroy(&info->print_mess);
+	free(info->philo);
+}
 
 void	print_errors(int error)
 {
@@ -65,7 +80,7 @@ void ft_usleep(int time)
 {
 	while (time)
 	{
-		usleep(250);
+		usleep(100);
 		time--;
 	}
 }

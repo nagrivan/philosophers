@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:05:45 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/06 19:05:45 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/09 04:08:12 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ void who_is_died(t_info *info)
     {
 		if (i >= info->number_philo)
 			i = 0;
-        info->current_time = get_time();
-        if (info->current_time - info->time_to_start - info->philo[i].start_eat > info->time_to_die)
+        info->current_time = get_time() - info->time_to_start;
+        if (info->current_time - info->philo[i].start_eat > info->time_to_die)
 		{
+			pthread_mutex_lock(&info->print_mess);
 			print_messange(info->current_time - info->time_to_start, info->philo[i].num_phil, "is died.");
-            return ;
+            pthread_mutex_unlock(&info->print_mess);
+			return ;
 		}
 		if (who_is_eat == info->number_philo)
 		{
@@ -40,47 +42,88 @@ void who_is_died(t_info *info)
     }
 }
 
+void	round_think(t_philo *copy_ph)
+{
+	/**/
+	copy_ph->data->current_time = get_time() - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->data->current_time, copy_ph->num_phil, "if thinking.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);
+}
+
+void	round_sleep(t_philo *copy_ph)
+{
+	/**/
+	copy_ph->start_sleep = get_time() - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->start_sleep, copy_ph->num_phil, "is sleeping.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);
+	ft_usleep(copy_ph->data->time_to_sleep);
+}
+
+/*
+void	take_fork(t_philo *copy_ph, int fork)
+{
+	pthread_mutex_lock(&copy_ph->data->forks[fork]);
+	copy_ph->data->current_time = get_time() - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->data->current_time, copy_ph->num_phil, "has taken a fork.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);
+}
+*/
+
+void	take_left_fork(t_philo *copy_ph)
+{
+	/**/
+	pthread_mutex_lock(&copy_ph->data->forks[copy_ph->left_fork]);
+	copy_ph->data->current_time = get_time() - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->data->current_time, copy_ph->num_phil, "take a left fork.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);	
+}
+
+void	take_right_fork(t_philo *copy_ph)
+{
+	/**/
+	pthread_mutex_lock(&copy_ph->data->forks[copy_ph->right_fork]);
+	copy_ph->data->current_time = get_time() - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->data->current_time, copy_ph->num_phil, "take a right fork.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);	
+}
+
+void	round_eat(t_philo *copy_ph)
+{
+	/**/
+	copy_ph->data->current_time = get_time();
+	copy_ph->start_eat = copy_ph->data->current_time - copy_ph->data->time_to_start;
+	pthread_mutex_lock(&copy_ph->data->print_mess);
+	print_messange(copy_ph->start_eat, copy_ph->num_phil, "is eating.");
+	pthread_mutex_unlock(&copy_ph->data->print_mess);
+	copy_ph->num_eat++;
+	if (copy_ph->num_eat == copy_ph->data->number_of_philo_eat)
+		who_is_eat++;
+	ft_usleep(copy_ph->data->time_to_eat);
+	pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->left_fork]);
+	pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->right_fork]);
+}
+
 void *round_life(void *philo)
 {
 	t_philo *copy_ph;
 	
 	copy_ph = (t_philo *)philo;
 	if (copy_ph->num_phil % 2 == 0)
-		ft_usleep(1000);
+		ft_usleep(1000); //ft_usleep(copy_ph->data->time_to_eat / 2);
 	while (1)
 	{
-		pthread_mutex_lock(&copy_ph->data->forks[copy_ph->left_fork]);
-		copy_ph->data->current_time = get_time();
-		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "take a left fork.");
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		
-		pthread_mutex_lock(&copy_ph->data->forks[copy_ph->right_fork]);
-		copy_ph->data->current_time = get_time();
-		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "take a right fork.");
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		
-		copy_ph->data->current_time = get_time();
-		copy_ph->start_eat = copy_ph->data->current_time - copy_ph->data->time_to_start;
-		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->start_eat, copy_ph->num_phil, "is eating.");
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		copy_ph->num_eat++;
-		if (copy_ph->num_eat == copy_ph->data->number_of_philo_eat)
-			who_is_eat++;
-		
-		ft_usleep(copy_ph->data->time_to_eat);
-		pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->left_fork]);
-		pthread_mutex_unlock(&copy_ph->data->forks[copy_ph->right_fork]);
-		copy_ph->start_sleep = get_time();
-		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->start_sleep - copy_ph->data->time_to_start, copy_ph->num_phil, "is sleeping.");
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
-		ft_usleep(copy_ph->data->time_to_sleep);
-		pthread_mutex_lock(&copy_ph->data->print_mess);
-		print_messange(copy_ph->data->current_time - copy_ph->data->time_to_start, copy_ph->num_phil, "if thinking.");
-		pthread_mutex_unlock(&copy_ph->data->print_mess);
+		//take_fork(&copy_ph, copy_ph->left_fork);
+		//take_fork(&copy_ph, copy_ph->right_fork);
+		take_left_fork(&copy_ph);
+		take_right_fork(&copy_ph);
+		round_eat(&copy_ph);
+		round_sleep(&copy_ph);
+		round_think(&copy_ph);
 	}
 }
 
