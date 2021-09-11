@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:11:55 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/05 19:58:56 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/11 19:28:37 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_philo
 
 typedef struct s_info
 {
+	int who_is_eat;
 	int number_philo; // количество философов
 	int number_of_philo_eat; //
 	time_t time_to_die; // время умирать
@@ -45,7 +46,7 @@ typedef struct s_info
 	time_t current_time; // текущее время
 	t_philo *philo;
 	pthread_mutex_t *forks; //массив вилок
-	pthread_mutex_t print_mess; // бронь на вывод сообщения
+	// pthread_mutex_t print_mess; // бронь на вывод сообщения
 } t_info;
 
 int main(int argc, char **argv);
