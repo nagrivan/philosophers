@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/21 20:11:55 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/11 19:28:37 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/12 20:22:36 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,12 @@
 # include <time.h>
 # include <stdlib.h>
 # include <string.h>
+# include <limits.h>
 
 typedef struct s_philo
 {
-	int num_phil; //номер философа
+	int num_phil; //номер философа от 1
+	int i; // скорее всего не нужна
 	int left_fork; // левая вилка
 	int right_fork; // правая вилка
 	int num_eat; // сколько философ пожрал
@@ -46,6 +48,7 @@ typedef struct s_info
 	time_t current_time; // текущее время
 	t_philo *philo;
 	pthread_mutex_t *forks; //массив вилок
+	pthread_mutex_t time_eat;
 	// pthread_mutex_t print_mess; // бронь на вывод сообщения
 } t_info;
 
