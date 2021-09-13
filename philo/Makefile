@@ -19,9 +19,9 @@ OBJS	= ${SRCS:.c=.o}
 
 INCLUDES	= philo.h
 
-CC	= clang
+CC	= gcc
 
-CFLAGS	= -g -Wall -Wextra -Werror
+CFLAGS	= -g -Wall -Wextra -Werror -pthread
 
 RM	= rm -rf
 

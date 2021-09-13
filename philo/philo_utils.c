@@ -19,10 +19,10 @@ void	ft_free(t_info *info)
 	i = 0;
 	while (i <= info->number_philo)
 	{
-		pthread_mutex_destroy(&info->forks[i]);
+		pthread_mutex_destroy(&info->philo[0].forks[i]->fork);
 		i++;
 	}
-	pthread_mutex_destroy(&info->forks[i]);
+	pthread_mutex_destroy(&info->philo[0].forks[i]->fork);
 	free(info->philo);
 }
 
@@ -75,11 +75,11 @@ int	ft_atoi(const char *str)
 	return (res);
 }
 
-void ft_usleep(int time)
+void ft_usleep(time_t time)
 {
 	while (time)
 	{
-		usleep(1000);
+		usleep(500);
 		time--;
 	}
 }
