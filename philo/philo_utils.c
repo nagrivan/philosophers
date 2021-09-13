@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/11 19:41:54 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/12 20:41:46 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,9 @@ int	ft_atoi(const char *str)
 
 void ft_usleep(int time)
 {
-	while (time)
-	{
-		usleep(1000);
-		time--;
-	}
+	time *= 2;
+	while (time--)
+		usleep(500);
 }
 
 time_t  get_time(void)
