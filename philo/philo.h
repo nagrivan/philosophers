@@ -22,38 +22,39 @@
 # include <string.h>
 # include <limits.h>
 
-# define DELAY	500
+# define DELAY			500
 
 typedef struct s_philo	t_philo;
 typedef struct s_info	t_info;
 
 struct s_philo
 {
-	int 			num_phil; //номер философа от 1
-	int 			i; // скорее всего не нужна
-	int				left_fork; // левая вилка
-	int				right_fork; // правая вилка
-	int				num_eat; // сколько философ пожрал
-	time_t			start_eat; // время начала жратвы
-	time_t			start_sleep; // время начала сна
-	pthread_t		tread;
-	struct s_info	*data;
-	pthread_mutex_t	**forks; //ссылка на массив вилок
+	int 				num_phil; //номер философа от 1
+	int 				i; // скорее всего не нужна
+	int					first_fork; // одна вилка вилка
+	int					second_fork; // другая вилка вилка
+	int					num_eat; // сколько философ пожрал
+	time_t				start_eat; // время начала жратвы
+	time_t				start_sleep; // время начала сна
+	pthread_t			tread;
+	struct s_info		*data;
+	pthread_mutex_t		**forks; //ссылка на массив вилок
 	// int i_all;
 };
 
 struct s_info
 {
-	int				who_is_eat;
-	int				number_philo; // количество философов
-	int				number_of_philo_eat; //
-	time_t			time_to_die; // время умирать
-	time_t			time_to_sleep; // время на сон
-	time_t			time_to_eat; // время на еду
-	time_t			time_to_start; // время начала
-	time_t			current_time; // текущее время
-	t_philo			*philo;
-	pthread_mutex_t	time_eat;
+	int					who_is_eat;
+	int					number_philo; // количество философов
+	int					number_of_philo_eat; //
+	time_t				time_to_die; // время умирать
+	time_t				time_to_sleep; // время на сон
+	time_t				time_to_eat; // время на еду
+	time_t				time_to_start; // время начала
+	time_t				current_time; // текущее время
+	t_philo				*philo;
+	pthread_mutex_t		time_eat;
+	pthread_mutex_t		printf;
 	// pthread_mutex_t print_mess; // бронь на вывод сообщения
 };
 
