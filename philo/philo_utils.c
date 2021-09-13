@@ -19,10 +19,10 @@ void	ft_free(t_info *info)
 	i = 0;
 	while (i <= info->number_philo)
 	{
-		pthread_mutex_destroy(&info->philo[0].forks[i]->fork);
+		pthread_mutex_destroy(info->philo[0].forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&info->philo[0].forks[i]->fork);
+	pthread_mutex_destroy(info->philo[0].forks[i]);
 	free(info->philo);
 }
 

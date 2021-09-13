@@ -26,12 +26,6 @@
 
 typedef struct s_philo	t_philo;
 typedef struct s_info	t_info;
-typedef struct s_fork	t_fork;
-
-struct s_fork
-{
-	pthread_mutex_t	fork;
-};
 
 struct s_philo
 {
@@ -44,7 +38,7 @@ struct s_philo
 	time_t			start_sleep; // время начала сна
 	pthread_t		tread;
 	struct s_info	*data;
-	t_fork			**forks; //ссылка на массив вилок
+	pthread_mutex_t	**forks; //ссылка на массив вилок
 	// int i_all;
 };
 

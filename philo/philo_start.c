@@ -62,19 +62,15 @@ int	take_forks(t_philo *philo)
 {
 	if (philo->left_fork < philo->right_fork)
 	{
-		printf("%p\n", (void *)&philo->forks[philo->left_fork]->fork);
-		pthread_mutex_lock(&philo->forks[philo->left_fork]->fork);
+		pthread_mutex_lock(philo->forks[philo->left_fork]);
 		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "has taken a fork.");
-		printf("%p\n", (void *)&philo->forks[philo->right_fork]->fork);
-//		pthread_mutex_lock(&philo->forks[philo->right_fork]->fork);
+		pthread_mutex_lock(philo->forks[philo->right_fork]);
 	}
 	else if (philo->left_fork > philo->right_fork)
 	{
-		printf("%p\n", (void *)&philo->forks[philo->right_fork]->fork);
-//		pthread_mutex_lock(&philo->forks[philo->right_fork]->fork);
+		pthread_mutex_lock(philo->forks[philo->right_fork]);
 		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "has taken a fork.");
-		printf("%p\n", (void *)&philo->forks[philo->left_fork]->fork);
-//		pthread_mutex_lock(&philo->forks[philo->left_fork]->fork);
+		pthread_mutex_lock(philo->forks[philo->left_fork]);
 	}
 	else // случай с одним философом
 	{
@@ -87,13 +83,13 @@ void	put_forks(t_philo *philo)
 {
 	if (philo->left_fork > philo->right_fork)
 	{
-		pthread_mutex_unlock(&philo->forks[philo->left_fork]->fork);
-		pthread_mutex_unlock(&philo->forks[philo->right_fork]->fork);
+		pthread_mutex_unlock(philo->forks[philo->left_fork]);
+		pthread_mutex_unlock(philo->forks[philo->right_fork]);
 	}
 	else if (philo->left_fork < philo->right_fork)
 	{
-		pthread_mutex_unlock(&philo->forks[philo->right_fork]->fork);
-		pthread_mutex_unlock(&philo->forks[philo->left_fork]->fork);
+		pthread_mutex_unlock(philo->forks[philo->right_fork]);
+		pthread_mutex_unlock(philo->forks[philo->left_fork]);
 	}
 }
 
@@ -152,7 +148,7 @@ int start_play(t_info *info)
 	return (0);
 }
 
-void init_phill(t_info *info, int i, t_fork **f, t_philo *philo) // инициализируем структуру каждого философа
+void init_phill(t_info *info, int i, pthread_mutex_t **forks, t_philo *philo) // инициализируем структуру каждого философа
 {
 	philo->num_phil = i + 1;
 	philo->i = i;
@@ -176,34 +172,37 @@ void init_phill(t_info *info, int i, t_fork **f, t_philo *philo) // инициа
 	philo->num_eat = 0;
 	philo->data = info;
 	philo->start_eat = 0;
-	philo->forks = f;
+	philo->forks = forks;
 
 	pthread_mutex_init(&info->philo[i].data->time_eat, NULL);
 }
 
 int before_a_game(t_info *info) // подготовка к началу "голодных игр" плодим необходимое количество структур под каждого философа и узнаем время начала.
 {
-	int		i;
-	t_fork	*f;
+	int				i;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	**forks_pt;
 	
 	i = 0;
 	info->philo = (t_philo *)malloc(sizeof(t_philo) * info->number_philo);
 	if (!info->philo)
 		return (1);
-	f = malloc(sizeof(t_fork) * info->number_philo); //free(info->philo)
-	if (!f)
+	forks = malloc(sizeof(pthread_mutex_t) * info->number_philo); //free(info->philo)
+	if (!forks)
+		return (1);
+	forks_pt = malloc(sizeof(pthread_mutex_t *) * info->number_philo);
+	if (!forks_pt)
 		return (1);
 	while (i < info->number_philo)
 	{
-		pthread_mutex_init(&f[i].fork, NULL);
-		printf("%p\n", &f[i].fork);
+		pthread_mutex_init(&forks[i], NULL);
+		forks_pt[i] = &forks[i];
 		i++;
 	}
-	printf("===================\n");
 	i = 0;
 	while (i < info->number_philo)
 	{
-		init_phill(info, i, &f, &info->philo[i]);
+		init_phill(info, i, forks_pt, &info->philo[i]);
 		i++;
 	}
 	return (0);
