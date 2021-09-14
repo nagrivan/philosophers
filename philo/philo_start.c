@@ -33,7 +33,7 @@ void who_is_died(t_info *info)
 					return ;
 				}
 			}
-			if (info->who_is_eat >= info->number_philo && info->number_philo)
+			if (info->who_is_eat >= info->number_philo && info->number_philo != 1)
 			{
 				pthread_mutex_unlock(&info->philo[i].data->time_eat);
 				pthread_mutex_lock(&info->print);
