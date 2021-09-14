@@ -16,32 +16,34 @@ void who_is_died(t_info *info)
 {
     int i;
 
-    i = 0;
     while (1)
     {
 		usleep(DELAY);
-		if (i >= info->number_philo)
-			i = 0;
-		pthread_mutex_lock(&info->philo[i].data->time_eat);
-        if (get_time() - info->time_to_start - info->philo[i].start_eat > info->time_to_die)
+		i = 0;
+		while (i < info->number_philo)
 		{
+			pthread_mutex_lock(&info->philo[i].data->time_eat);
+			if (get_time(info->time_to_start) - info->philo[i].start_eat > info->time_to_die)
+			{
+				if (info->philo[i].num_eat != info->number_of_philo_eat)
+				{
+					pthread_mutex_unlock(&info->philo[i].data->time_eat);
+					info->number_of_philo_eat = 0;
+					print_messange(&info->print, get_time(info->time_to_start), info->philo[i].num_phil, "is died."); //как убить потоки? дать команду
+					return ;
+				}
+			}
+			if (info->who_is_eat >= info->number_philo && info->number_philo)
+			{
+				pthread_mutex_unlock(&info->philo[i].data->time_eat);
+				pthread_mutex_lock(&info->print);
+				printf("| %ld | - | %s |\n", get_time(info->time_to_start), "everyone ate");
+				pthread_mutex_unlock(&info->print);
+				return ;
+			}
 			pthread_mutex_unlock(&info->philo[i].data->time_eat);
-			info->number_of_philo_eat = 0;
-			pthread_mutex_lock(&info->printf);
-			print_messange(get_time() - info->time_to_start, info->philo[i].num_phil, "is died."); //как убить потоки? дать команду
-			pthread_mutex_unlock(&info->printf);
-			return ;
+			i++;
 		}
-		if (info->who_is_eat == info->number_philo) //max_int
-		{
-			pthread_mutex_unlock(&info->philo[i].data->time_eat);
-			pthread_mutex_lock(&info->printf);
-			printf("| %ld | - | %s |\n", info->current_time, "all are eating");
-			pthread_mutex_unlock(&info->printf);
-			return ;
-		}
-		pthread_mutex_unlock(&info->philo[i].data->time_eat);
-        i++;
     }
 }
 
@@ -49,16 +51,10 @@ int	round_sleep(t_philo *philo)
 {
 	time_t	start_sleep;
 	
-	start_sleep = get_time() - philo->data->time_to_start;
-	if (start_sleep - philo->start_eat > philo->data->time_to_die)
-		return (-1);
-	else
-	{
-		pthread_mutex_lock(&philo->data->printf);
-		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "is sleeping.");
-		pthread_mutex_unlock(&philo->data->printf);
-	ft_usleep(philo->data->time_to_sleep);
-	}
+	start_sleep = get_time(philo->data->time_to_start);
+	print_messange(&philo->data->print, start_sleep, philo->num_phil, "is sleeping.");
+	while (get_time(philo->data->time_to_start) - start_sleep < philo->data->time_to_sleep)
+		usleep(DELAY);
 	return (0);
 }
 
@@ -67,17 +63,13 @@ int	take_forks(t_philo *philo)
 	if (philo->first_fork < philo->second_fork)
 	{
 		pthread_mutex_lock(philo->forks[philo->first_fork]);
-		pthread_mutex_lock(&philo->data->printf);
-		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "has taken a fork.");
-		pthread_mutex_unlock(&philo->data->printf);
+		print_messange(&philo->data->print, get_time(philo->data->time_to_start), philo->num_phil, "has taken a fork.");
 		pthread_mutex_lock(philo->forks[philo->second_fork]);
 	}
 	else if (philo->first_fork > philo->second_fork)
 	{
 		pthread_mutex_lock(philo->forks[philo->second_fork]);
-		pthread_mutex_lock(&philo->data->printf);
-		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "has taken a fork.");
-		pthread_mutex_unlock(&philo->data->printf);
+		print_messange(&philo->data->print, get_time(philo->data->time_to_start), philo->num_phil, "has taken a fork.");
 		pthread_mutex_lock(philo->forks[philo->first_fork]);
 	}
 	else // случай с одним философом
@@ -105,19 +97,18 @@ int	round_eat(t_philo *philo)
 {
 	time_t	start_eat;
 	
-	start_eat = get_time() - philo->data->time_to_start;
-	if (start_eat - philo->start_eat > philo->data->time_to_die)
-		return (-1);
-	else
-	{
 	pthread_mutex_lock(&philo->data->time_eat);
+	start_eat = get_time(philo->data->time_to_start);
+	if (start_eat - philo->start_eat > philo->data->time_to_die)
+	{
+		pthread_mutex_unlock(&philo->data->time_eat);
+		return (-1);
+	}
 	philo->start_eat = start_eat; //mutex на время
 	pthread_mutex_unlock(&philo->data->time_eat);
-	}
-	pthread_mutex_lock(&philo->data->printf);
-	print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "is eating.");
-	pthread_mutex_unlock(&philo->data->printf);
-	ft_usleep(philo->data->time_to_eat);
+	print_messange(&philo->data->print, start_eat, philo->num_phil, "is eating.");
+	while (get_time(philo->data->time_to_start) - start_eat < philo->data->time_to_eat)
+		usleep(DELAY);
 	if (philo->num_eat++ == INT_MAX)
 		philo->num_eat = 0;
 	return (0);
@@ -132,11 +123,8 @@ void *round_life(t_philo *philo)
 		if (round_eat(philo) == -1)
 			break ;
 		put_forks(philo);
-		if (round_sleep(philo) == -1)
-			break ;
-		pthread_mutex_lock(&philo->data->printf);
-		print_messange(get_time() - philo->data->time_to_start, philo->num_phil, "if thinking.");
-		pthread_mutex_unlock(&philo->data->printf);
+		round_sleep(philo);
+		print_messange(&philo->data->print, get_time(philo->data->time_to_start), philo->num_phil, "is thinking.");
 	}
 	pthread_mutex_lock(&philo->data->time_eat);
 	philo->data->who_is_eat++;
@@ -148,13 +136,20 @@ int start_play(t_info *info)
 {
 	int i;
 
-	i = 0; //time_to_start = get_time()
-	info->time_to_start = get_time();
+	i = 0;
+	info->time_to_start = get_time(0);
 	while (i < info->number_philo)
 	{
 		if ((pthread_create(&info->philo[i].tread, NULL, (void *)&round_life, &info->philo[i])) != 0)
 			return (1);
 		usleep(DELAY); //500
+		i++;
+	}
+	i = 0;
+	while (i < info->number_philo)
+	{
+		if ((pthread_detach(info->philo[i].tread) != 0))
+			return (1);
 		i++;
 	}
 	return (0);
@@ -172,6 +167,7 @@ void init_phill(t_info *info, int i, pthread_mutex_t **forks, t_philo *philo) //
 	philo->forks = forks;
 
 	pthread_mutex_init(&info->philo[i].data->time_eat, NULL);
+	pthread_mutex_init(&info->philo[i].data->print, NULL);
 }
 
 int before_a_game(t_info *info) // подготовка к началу "голодных игр" плодим необходимое количество структур под каждого философа и узнаем время начала.

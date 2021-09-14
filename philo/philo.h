@@ -35,7 +35,6 @@ struct s_philo
 	int					second_fork; // другая вилка вилка
 	int					num_eat; // сколько философ пожрал
 	time_t				start_eat; // время начала жратвы
-	time_t				start_sleep; // время начала сна
 	pthread_t			tread;
 	struct s_info		*data;
 	pthread_mutex_t		**forks; //ссылка на массив вилок
@@ -51,10 +50,9 @@ struct s_info
 	time_t				time_to_sleep; // время на сон
 	time_t				time_to_eat; // время на еду
 	time_t				time_to_start; // время начала
-	time_t				current_time; // текущее время
 	t_philo				*philo;
 	pthread_mutex_t		time_eat;
-	pthread_mutex_t		printf;
+	pthread_mutex_t		print;
 	// pthread_mutex_t print_mess; // бронь на вывод сообщения
 };
 
@@ -63,9 +61,9 @@ int		main(int argc, char **argv);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 void 	ft_usleep(time_t time);
-time_t  get_time(void);
+time_t  get_time(time_t start);
 void	print_errors(int error);
-void	print_messange(time_t time, int num_phil, char *text);
+void	print_messange(pthread_mutex_t *print, time_t time, int num_phil, char *text);
 void	ft_free(t_info *info);
 
 #endif

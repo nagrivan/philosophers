@@ -39,9 +39,11 @@ void	print_errors(int error)
 	printf("I refuse to work like this!\n");
 }
 
-void	print_messange(time_t time, int num_phil, char *text)
+void	print_messange(pthread_mutex_t *print, time_t time, int num_phil, char *text)
 {
+	pthread_mutex_lock(print);
 	printf("%ld  %d    %s\n", time, num_phil, text);
+	pthread_mutex_unlock(print);
 }
 
 void	*ft_calloc(size_t count, size_t size)
@@ -84,9 +86,10 @@ void ft_usleep(time_t time)
 	}
 }
 
-time_t  get_time(void)
+time_t  get_time(time_t start)
 {
     static struct timeval   time;
+	
     gettimeofday(&time, NULL);
-    return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000);;
+    return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000 - start);;
 }
