@@ -56,14 +56,23 @@ struct s_info
 	// pthread_mutex_t print_mess; // бронь на вывод сообщения
 };
 
-void 	*round_life(t_philo *philo);
 int		main(int argc, char **argv);
+void	print_errors(int error);
+int 	init_struct(t_info *info, int argc, char **argv);
+int 	before_a_game(t_info *info);
+void	ft_free(t_info *info);
+void	print_errors(int error);
+int		start_play(t_info *info);
+time_t  get_time(time_t start);
+void 	*round_life(t_philo *philo);
+int		take_forks(t_philo *philo);
+int		round_eat(t_philo *philo);
+void	put_forks(t_philo *philo);
+int		round_sleep(t_philo *philo);
+void	who_is_died(t_info *info);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 void 	ft_usleep(time_t time);
-time_t  get_time(time_t start);
-void	print_errors(int error);
 void	print_messange(pthread_mutex_t *print, time_t time, int num_phil, char *text);
-void	ft_free(t_info *info);
 
 #endif

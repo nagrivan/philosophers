@@ -21,7 +21,7 @@ INCLUDES	= philo.h
 
 CC	= gcc
 
-CFLAGS	= -g -Wall -Wextra -Werror -pthread
+CFLAGS	= -g -Wall -Wextra -Werror
 
 RM	= rm -rf
 

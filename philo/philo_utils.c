@@ -22,7 +22,8 @@ void	ft_free(t_info *info)
 		pthread_mutex_destroy(info->philo[0].forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(info->philo[0].forks[i]);
+	pthread_mutex_destroy(&info->time_eat);
+	pthread_mutex_destroy(&info->print);
 	free(info->philo);
 }
 

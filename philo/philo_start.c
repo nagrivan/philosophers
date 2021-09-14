@@ -118,7 +118,7 @@ void *round_life(t_philo *philo)
 {
 	while (philo->num_eat < philo->data->number_of_philo_eat)
 	{
-		if (take_forks(philo))
+		if (take_forks(philo) == -1)
 			break ;
 		if (round_eat(philo) == -1)
 			break ;
@@ -165,9 +165,6 @@ void init_phill(t_info *info, int i, pthread_mutex_t **forks, t_philo *philo) //
 	philo->data = info;
 	philo->start_eat = 0;
 	philo->forks = forks;
-
-	pthread_mutex_init(&info->philo[i].data->time_eat, NULL);
-	pthread_mutex_init(&info->philo[i].data->print, NULL);
 }
 
 int before_a_game(t_info *info) // подготовка к началу "голодных игр" плодим необходимое количество структур под каждого философа и узнаем время начала.
@@ -198,6 +195,8 @@ int before_a_game(t_info *info) // подготовка к началу "гол�
 		init_phill(info, i, forks_pt, &info->philo[i]);
 		i++;
 	}
+	pthread_mutex_init(&info->time_eat, NULL);
+	pthread_mutex_init(&info->print, NULL);
 	return (0);
 }
 
