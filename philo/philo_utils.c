@@ -6,7 +6,7 @@
 /*   By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/23 15:08:32 by nagrivan          #+#    #+#             */
-/*   Updated: 2021/09/12 20:41:46 by nagrivan         ###   ########.fr       */
+/*   Updated: 2021/09/16 20:36:38 by nagrivan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,77 +14,63 @@
 
 void	ft_free(t_info *info)
 {
-	int i;
+	int		i;
 
 	i = 0;
-	while (i <= info->number_philo)
+	if (info->philo)
 	{
-		pthread_mutex_destroy(&info->forks[i]);
-		i++;
+		while (i < info->number_philo)
+		{
+			if (info->philo[i].forks)
+			{
+				pthread_mutex_destroy(info->philo[i].forks
+				[info->philo->first_fork]);
+				pthread_mutex_destroy(info->philo[i].forks
+				[info->philo->second_fork]);
+			}
+			i++;
+		}
 	}
-	pthread_mutex_destroy(&info->forks[i]);
-	free(info->philo);
-}
-
-void	print_errors(int error)
-{
-	if (error == 0)
-		printf("%s\n", "Invalid number arguments");
-	if (error == 1)
-		printf("%s\n", "Invalid arguments");
-	if (error == 2)
-		printf("%s\n", "Invalid malloc");
-	if (error == 3)
-		printf("%s\n", "Invalid tread");
-	printf("I refuse to work like this!\n");
-}
-
-void	print_messange(time_t time, int num_phil, char *text)
-{
-	printf("%ld  %d    %s\n", time, num_phil, text);
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	unsigned char	*str;
-	size_t			i;
-
-	i = 0;
-	str = (unsigned char *)malloc(count * size);
-	if (!(str))
-		return (NULL);
-	while (i < (count * size))
-	{
-		*(str + i) = '\0';
-		++i;
-	}
-	return (str);
+	pthread_mutex_destroy(&info->time_eat);
+	pthread_mutex_destroy(&info->print);
+	free(info->philo->forks);
 }
 
 int	ft_atoi(const char *str)
 {
 	int					i;
-	int					res;
+	unsigned int		res;
 
 	i = 0;
 	res = 0;
+	if (!str || !str[0])
+		return (-1);
+	if ((ft_strlen(str)) > 10)
+		return (-1);
 	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
 		res = res * 10 + (str[i++] - '0');
+		if (res == 0)
+			return (-1);
+	}
 	if (str[i] != '\0')
 		return (-1);
 	return (res);
 }
 
-void ft_usleep(int time)
+void	ft_usleep(time_t time)
 {
-	time *= 2;
-	while (time--)
+	while (time)
+	{
 		usleep(500);
+		time--;
+	}
 }
 
-time_t  get_time(void)
+time_t	get_time(time_t start)
 {
-    static struct timeval   time;
-    gettimeofday(&time, NULL);
-    return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000);;
+	static struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * (time_t)1000) + time.tv_usec / 1000 - start);
 }

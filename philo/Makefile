@@ -6,20 +6,24 @@
 #    By: nagrivan <nagrivan@21-school.ru>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/11 16:09:16 by nagrivan          #+#    #+#              #
-#    Updated: 2021/09/11 17:08:04 by nagrivan         ###   ########.fr        #
+#    Updated: 2021/09/16 20:00:52 by nagrivan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 
-
-SRCS	= philo_start.c philo_utils.c
+SRCS	=	philo_start.c \
+			philo_utils.c \
+			philo_init.c \
+			philo_life.c \
+			philo_monitor.c \
+			philo_print.c
 			
 OBJS	= ${SRCS:.c=.o}
 
 INCLUDES	= philo.h
 
-CC	= clang
+CC	= gcc
 
 CFLAGS	= -g -Wall -Wextra -Werror
 
@@ -27,7 +31,7 @@ RM	= rm -rf
 
 all: $(NAME)
 
-%.o : %.c
+%.o : %.c ${INCLUDES}
 		${CC} ${CFLAGS} -c $< -o $@
 
 $(NAME): ${OBJS}
@@ -41,4 +45,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+norma:
+		norminette ${SRCS} ${INCLUDES}
+
+.PHONY: all clean fclean re norma
